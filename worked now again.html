@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>Gamedev Canvas Workshop :D </title>
+	<style>
+		* {padding: 0; margin: 0; }
+		canvas { background: #eee; display: block; margin: 0 auto; }
+		</style>
+
+</head>
+<body>
+
+<canvas id="canvas", width=1000, height=550> </canvas>
+
+<table>
+	  <tr>
+			<td>right pressed:</td>
+			<td><div id="right pressed"></div></td>
+			<td> &nbsp; &nbsp;</td>
+			<td>shoot pressed:</td>
+			<td><div id="shootpressed"> </div></td>
+		</tr>
+		<tr>
+			<td>left pressed:</td>
+			<td><div id="left pressed"></div></td>
+		</tr>
+		<tr>
+			<td> player x: </td>
+			<td><div id ="playerx"></div></td>
+		</tr>
+
+
+</table>
+
+
+<script>
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+var image = new Image();
+var bullet = new Image();
+bullet.src= "Sprites/bullet.png"
+image.src = "Sprites/spreadsheet.png";
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
+
+
+//player
+var playerX = 0;
+var playerY = 0;
+var rightPressed = false;
+var leftPressed = false;
+var downPressed = false;
+var upPressed = false;
+var shootPressed = false;
+var rightDisplay = document.getElementById("right pressed");
+var leftDisplay = document.getElementById("left pressed");
+var playerxDisplay = document.getElementById("playerx");
+var shootDisplay = document.getElementById("shootpressed");
+var speed = 7
+
+//Sprites
+
+
+
+//key handler
+function keyDownHandler(e) {
+		if(e.keyCode == 39){
+			rightPressed = true;
+			rightDisplay.innerHTML = rightPressed;
+		}
+		else if (e.keyCode == 37){
+			leftPressed = true;
+			leftDisplay.innerHTML = leftPressed;
+		}
+		if (e.keyCode == 38){
+			upPressed = true;
+		}
+		else if (e.keyCode == 40){
+			downPressed = true
+		}
+		if (e.keyCode == 90){
+			shootPressed = true
+			shootDisplay.innerHTML = shootPressed;
+		}
+
+}
+
+function keyUpHandler(e) {
+		if(e.keyCode == 39){
+			rightPressed = false;
+			rightDisplay.innerHTML =  rightPressed;
+		}
+		else if (e.keyCode == 37){
+			leftPressed = false;
+			leftDisplay.innerHTML = leftPressed;
+		}
+		if (e.keyCode == 38){
+			upPressed = false;
+		}
+		else if (e.keyCode == 40){
+			downPressed = false;
+		}
+		if (e.keyCode == 90){
+			shootPressed = false
+			shootDisplay.innerHTML = shootPressed;
+		}
+}
+
+
+//ctx.drawImage(image, 0, 0, 64, 64, 0, 0, 64, 64);
+
+
+function sprite (options) {
+
+	var that = {},
+		frameIndex = 0,
+		tickCount = 0,
+		ticksPerFrame = options.ticksPerFrame || 0,
+		numberOfFrames = options.numberOfFrames || 1;
+
+	that.context = options.context;
+	that.width = options.width;
+	that.height = options.height;
+	that.x = options.x;
+	that.y = options.y;
+	that.image = options.image;
+	that.scaleRatio = 1;
+	that.status = options.status;
+
+
+
+	that.update = function () {
+
+					tickCount += 1;
+
+					if (tickCount > ticksPerFrame) {
+
+			tickCount = 0;
+
+							// If the current frame index is in range
+							if (frameIndex < numberOfFrames - 1) {
+									// Go to the next frame
+									frameIndex += 1;
+							} else {
+									frameIndex = 0;
+							}
+					}
+			};
+
+	that.render = function (x=0, y=0) {
+
+
+// Draw the animation
+		that.context.drawImage(
+			that.image,
+			0, // si fuera de izquierda a derecha hay que alternar 77 con 78
+			frameIndex * that.height / numberOfFrames,
+			that.width , // si fuera de izquierda a derecha hay que alternar con 80 la division
+			that.height/ numberOfFrames,
+			x,
+			y,
+			that.width ,
+			that.height / numberOfFrames);
+
+	};
+
+	that.getFrameWidth = function () {
+		return that.width / numberOfFrames;
+	};
+
+	return that;
+}
+
+
+var tower = sprite({
+ context: ctx,
+ width: 64,
+ height: 128,
+ image: image,
+ numberOfFrames : 2,
+ ticksPerFrame : 10,
+})
+
+var bulletSprite = sprite({
+ context: ctx,
+ width: 32,
+ height: 32,
+ image: bullet,
+ numberOfFrames : 1,
+ ticksPerFrame : 10,
+ status: 1,
+})
+
+
+function playerMovement (){
+	if(rightPressed && playerX<canvas.width-64){
+		playerX+= 7;
+	}
+  else if(leftPressed && playerX>0 ){
+		playerX-=7;
+	}
+ 	if(upPressed && playerY > 0){
+		playerY -=7;
+	}
+	else if(downPressed && playerY < canvas.height - 64) {
+		playerY += 7;
+	}
+
+}
+
+
+
+function bulletMovement(){
+	var bulletX = 1000
+	var bulletY = 1000
+	//bullet
+	if(shootPressed){
+		var bulletY = playerY - 10
+		var bulletX = playerX + 18
+		while(bulletY > 0){
+			bulletY -= 1;
+		}
+	}
+	return [bulletX, bulletY];
+}
+
+
+// input
+
+	 playerxDisplay.innerHTML = playerX;
+	 function draw(){
+	 ctx.clearRect(0, 0, canvas.width, canvas.height);
+	 tower.update();
+	 bulletSprite.update();
+	 tower.render(playerX, playerY);
+	 var bulletPos = bulletMovement();
+	 bulletSprite.render(bulletPos[0], bulletPos[2])
+	 playerMovement();
+	 //bulletSprite.render(playerX + 18, playerY -10);
+	 requestAnimationFrame(draw);
+
+
+
+  // setTimeout(drawImageActualSize2, 3000);
+
+}
+draw();
+
+
+
+
+</script>
