@@ -62,7 +62,6 @@ var speed = 7
 //Sprites
 
 
-
 //key handler
 function keyDownHandler(e) {
 		if(e.keyCode == 39){
@@ -209,6 +208,8 @@ function playerMovement (){
 
 }
 
+var bulletX = 1000
+var bulletY = 1000
 
 
 function bulletMovement(){
@@ -216,14 +217,17 @@ function bulletMovement(){
 	var bulletY = 1000
 	//bullet
 	if(shootPressed){
-		var bulletY = playerY - 10
-		var bulletX = playerX + 18
-		while(bulletY > 0){
-			bulletY -= 1;
-		}
+		var bulletX = playerX + 16
+		var bulletY = playerY + 18
+		shootPressed = false
+		setTimeout(bulletMovement, 100);
 	}
-	return [bulletX, bulletY];
+	else if(bulletY > 0){
+		bulletY -=1;
+	}
 }
+
+
 
 
 // input
@@ -234,8 +238,8 @@ function bulletMovement(){
 	 tower.update();
 	 bulletSprite.update();
 	 tower.render(playerX, playerY);
-	 var bulletPos = bulletMovement();
-	 bulletSprite.render(bulletPos[0], bulletPos[2])
+	 bulletMovement();
+	 bulletSprite.render(bulletX, bulletY);
 	 playerMovement();
 	 //bulletSprite.render(playerX + 18, playerY -10);
 	 requestAnimationFrame(draw);
