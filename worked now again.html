@@ -60,8 +60,8 @@ var shootDisplay = document.getElementById("shootpressed");
 var speed = 7
 
 //Sprites
-var bulletX = 0;
-var bulletY = 0;
+var bulletX = 1000;
+var bulletY = 1000;
 
 
 //key handler
@@ -209,26 +209,49 @@ function playerMovement (){
 	}
 
 }
+var bulletArray = [];
+function createBullet(){
+	bulletArray = []
+	for (i = 0; i < 5; i++){
+		bulletArray.push(bulletSprite);
+	}
+	setTimeout(createBullet,1000);
+}
 
-
+function Shot(x, y, dx, dy){
+	this.x=x;
+	this.y=y;
+	this.dx=dx;
+	this.dy=dy;
+}
 
 function bulletMovement(){
 
 	//bullet
-	if(shootPressed){
-			bulletX = playerX + 16
-			bulletY = playerY + 18
+	if(shootPressed == true){
+			bulletX = playerX + 16;
+			bulletY = playerY + 18;
+			bulletArray.shift();
 
-			shootPressed = false
-			setTimeout(bulletMovement, 100);
+
+
+
+			console.log(bulletArray);
+			console.log(bulletArray.length)
+
+
 	}
-	if(bulletY > 0){
-			bulletY -= 30;
+	if(bulletY > -40){
+			bulletY -= 30
+			shootPressed = false;
+
+
 	}
 
 }
 
 
+createBullet();
 
 
 // input
@@ -241,7 +264,9 @@ function bulletMovement(){
 	 tower.update();
 	 bulletSprite.update();
 	 tower.render(playerX, playerY);
-	 bulletSprite.render(bulletX, bulletY);
+	 if (bulletArray.length > 1 && shootPressed == false){
+		 bulletArray[1].render(bulletX, bulletY)
+	 }
 
 	 //bulletSprite.render(playerX + 18, playerY -10);
 	 requestAnimationFrame(draw);
