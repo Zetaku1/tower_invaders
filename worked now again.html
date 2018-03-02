@@ -209,49 +209,55 @@ function playerMovement (){
 	}
 
 }
-var bulletArray = [];
-function createBullet(){
-	bulletArray = []
-	for (i = 0; i < 5; i++){
-		bulletArray.push(bulletSprite);
-	}
-	setTimeout(createBullet,1000);
-}
 
-function Shot(x, y, dx, dy){
+var bulletArray = [];
+
+function Shot(x, y, bulletSprite){
 	this.x=x;
 	this.y=y;
-	this.dx=dx;
-	this.dy=dy;
+	this.bulletSprite = bulletSprite;
+}
+
+Shot.prototype.display=function(){
+	bulletSprite.render(this.x, this.y);
 }
 
 function bulletMovement(){
 
 	//bullet
 	if(shootPressed == true){
-			bulletX = playerX + 16;
-			bulletY = playerY + 18;
-			bulletArray.shift();
-
-
-
-
-			console.log(bulletArray);
-			console.log(bulletArray.length)
-
-
+		bulletArray.push(new Shot(playerX + 16, playerY - 18));
 	}
-	if(bulletY > -40){
-			bulletY -= 30
-			shootPressed = false;
 
 
+	if(bulletArray.length == 0){
+		return;
 	}
+//array of active shots
+	var a = [];
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	for (var i=0; i<bulletArray.length;i++){
+		var shot = bulletArray[i];
+		shot.x += 30;
+		shot.y += 30;
+
+		if (shot.x >= 0 && shot.x <= canvas.width && shot.y > 0 && shot.y <= canvas.height){
+			a.push(shot);
+			shot.display;
+
+		}
+	}
+	if (a.length < bulletArray.length){
+		bulletArray.length = 0;
+		a.splice(0,1);
+	}
+
 
 }
 
 
-createBullet();
+
+
 
 
 // input
@@ -264,9 +270,7 @@ createBullet();
 	 tower.update();
 	 bulletSprite.update();
 	 tower.render(playerX, playerY);
-	 if (bulletArray.length > 1 && shootPressed == false){
-		 bulletArray[1].render(bulletX, bulletY)
-	 }
+
 
 	 //bulletSprite.render(playerX + 18, playerY -10);
 	 requestAnimationFrame(draw);
