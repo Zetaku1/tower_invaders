@@ -225,8 +225,10 @@ Shot.prototype.display=function(){
 function bulletMovement(){
 
 	//bullet
-	if(shootPressed == true){
+	if(shootPressed == true ){
 		bulletArray.push(new Shot(playerX + 18, playerY - 18, bulletSprite));
+ 	//this line makes it so it goes one bullet at a time
+	setTimeout(function(){shootPressed = false}, 10);
 	}
 
 
@@ -235,27 +237,27 @@ function bulletMovement(){
 	}
 //array of active shots
 	var a = [];
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	for (var i=0; i<bulletArray.length;i++){
 		var shot = bulletArray[i];
 		shot.x += 0;
-		shot.y -= 30;
+		shot.y -= 5;
 
 		if (shot.x >= 0 && shot.x <= canvas.width && shot.y > 0 && shot.y <= canvas.height){
 			a.push(shot);
-			bulletSprite.render(shot.x, shot.y);
+			//bulletSprite.render(shot.x, shot.y); is the same :o
+			shot.display();
 
 
 		}
 	}
+	// if shots went off-canvas, remove them from shots[]
 	if (a.length < bulletArray.length){
 		bulletArray.length = 0;
-		a.splice(0,1);
+		Array.prototype.push.apply(bulletArray, a);
 	}
 
 
 }
-
 
 
 
@@ -266,8 +268,9 @@ function bulletMovement(){
 	 playerxDisplay.innerHTML = playerX;
 	 function draw(){
 	 ctx.clearRect(0, 0, canvas.width, canvas.height);
-	 playerMovement();
 	 bulletMovement();
+	 playerMovement();
+
 	 tower.update();
 	 bulletSprite.update();
 	 tower.render(playerX, playerY);
