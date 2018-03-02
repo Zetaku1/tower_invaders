@@ -228,7 +228,7 @@ function bulletMovement(){
 	if(shootPressed == true ){
 		bulletArray.push(new Shot(playerX + 18, playerY - 18, bulletSprite));
  	//this line makes it so it goes one bullet at a time
-	setTimeout(function(){shootPressed = false}, 10);
+	//setTimeout(function(){shootPressed = false}, 10 works but not as intended.
 	}
 
 
