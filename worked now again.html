@@ -226,7 +226,7 @@ function bulletMovement(){
 
 	//bullet
 	if(shootPressed == true){
-		bulletArray.push(new Shot(playerX + 16, playerY - 18));
+		bulletArray.push(new Shot(playerX + 18, playerY - 18, bulletSprite));
 	}
 
 
@@ -238,12 +238,13 @@ function bulletMovement(){
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	for (var i=0; i<bulletArray.length;i++){
 		var shot = bulletArray[i];
-		shot.x += 30;
-		shot.y += 30;
+		shot.x += 0;
+		shot.y -= 30;
 
 		if (shot.x >= 0 && shot.x <= canvas.width && shot.y > 0 && shot.y <= canvas.height){
 			a.push(shot);
-			shot.display;
+			bulletSprite.render(shot.x, shot.y);
+
 
 		}
 	}
