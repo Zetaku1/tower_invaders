@@ -82,7 +82,9 @@ function keyDownHandler(e) {
 		}
 		if (e.keyCode == 90){
 			shootPressed = true
+
 			shootDisplay.innerHTML = shootPressed;
+
 		}
 
 }
@@ -157,7 +159,7 @@ function sprite (options) {
 			that.image,
 			0, // si fuera de izquierda a derecha hay que alternar 77 con 78
 			frameIndex * that.height / numberOfFrames,
-			that.width , // si fuera de izquierda a derecha hay que alternar con 80 la division
+			that.width , // si fuera de izquierda a derecha hay que alternar con linea de abajo
 			that.height/ numberOfFrames,
 			x,
 			y,
@@ -225,11 +227,13 @@ Shot.prototype.display=function(){
 function bulletMovement(){
 
 	//bullet
-	if(shootPressed == true ){
+	if(shootPressed){
 		bulletArray.push(new Shot(playerX + 18, playerY - 18, bulletSprite));
- 	//this line makes it so it goes one bullet at a time
+		}
+		//setTimeout(bulletMovement, 1000);
+	//this line makes it so it goes one bullet at a time
 	//setTimeout(function(){shootPressed = false}, 10 works but not as intended.
-	}
+
 
 
 	if(bulletArray.length == 0){
@@ -240,20 +244,21 @@ function bulletMovement(){
 	for (var i=0; i<bulletArray.length;i++){
 		var shot = bulletArray[i];
 		shot.x += 0;
-		shot.y -= 5;
+		shot.y -= 20;//hacer que sea objeto que se mueve
 
 		if (shot.x >= 0 && shot.x <= canvas.width && shot.y > 0 && shot.y <= canvas.height){
 			a.push(shot);
 			//bulletSprite.render(shot.x, shot.y); is the same :o
+			//setTimeout(shot.display(),1000);// no sirve para disparo en intervalo
 			shot.display();
 
 
 		}
 	}
-	// if shots went off-canvas, remove them from shots[]
+	// if shots went off-canvas, remove them from bulletArray[]
 	if (a.length < bulletArray.length){
 		bulletArray.length = 0;
-		Array.prototype.push.apply(bulletArray, a);
+		//Array.prototype.push.apply(bulletArray, a);
 	}
 
 
